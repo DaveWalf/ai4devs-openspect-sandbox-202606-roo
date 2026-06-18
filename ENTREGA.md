@@ -33,31 +33,64 @@ openspec/
 
 ---
 
-## 2. Los 3 Pilares — micro-tarea: validador de CUIT argentino
+## 2. Parte A — Micro-tarea y 3 pilares
 
-**Herramienta:** Claude Code (claude-sonnet-4-6) con OpenSpec 1.4.1
+### Micro-tarea
 
-**Contexto:**
-- Implementar una función en JavaScript llamada `isValidCuit(cuit)`, que valide un CUIT argentino con formato estricto `nn-nnnnnnnn-n` y verifique el dígito verificador.
-- No usar librerías externas.
-- Validar formato estricto `nn-nnnnnnnn-n`.
-- Si la entrada no es string, devolver `false`.
-- No consultar servicios externos.
-- No validar existencia real del CUIT.
-- Solo validar formato y dígito verificador.
+Validar un CUIT argentino, verificando formato y dígito verificador.
 
-**Prompt usado:**
-> Implementá una función en JavaScript llamada `isValidCuit(cuit)`, que valide un CUIT argentino con formato estricto `nn-nnnnnnnn-n` y verifique el dígito verificador.
->
-> Algoritmo:
-> - Quitar guiones.
-> - Usar pesos [5, 4, 3, 2, 7, 6, 5, 4, 3, 2].
-> - Multiplicar los primeros 10 dígitos por los pesos.
-> - Sumar.
-> - Calcular 11 - (suma % 11).
-> - Si da 11, el dígito esperado es 0.
-> - Si da 10, el dígito esperado es 9.
-> - Comparar contra el último dígito del CUIT.
+### Pilar 1 — Herramienta
+
+Usé Claude Code como copiloto dentro de VS Code.
+
+Usé Claude Code porque me permite trabajar dentro del proyecto en VS Code y pedir ayuda paso a paso para definir la tarea, construir el contexto y revisar una primera propuesta de solución.
+
+### Pilar 2 — Contexto
+
+- Lenguaje: JavaScript sobre Node.js.
+- La función será standalone, sin integrarse todavía a una aplicación existente.
+- Nombre de la función: `validarCUIT(valor)`.
+- Entrada: un valor que debería ser un string con CUIT argentino.
+- Formatos aceptados: CUIT con guiones o sin guiones.
+- La función normaliza internamente quitando guiones.
+- Salida: booleano, `true` si el CUIT es válido y `false` en cualquier otro caso.
+- No usa librerías externas.
+- No consulta servicios externos.
+- No lanza excepciones.
+- Las entradas inválidas, como `null`, `undefined`, string vacío, números u otros tipos, devuelven `false`.
+- La validación incluye formato y dígito verificador.
+
+### Pilar 3 — Prompt
+
+El prompt final aprobado le pide a Claude Code implementar una función `validarCUIT(valor)` en JavaScript puro, sin librerías externas, que acepte CUIT con o sin guiones, normalice la entrada, valide formato y dígito verificador, y devuelva siempre un booleano.
+
+También especifica:
+- no usar servicios externos;
+- no lanzar excepciones;
+- usar el algoritmo de dígito verificador con pesos `[5, 4, 3, 2, 7, 6, 5, 4, 3, 2]`;
+- incluir comentarios explicativos;
+- incluir ejemplos ejecutables con Node.js.
+
+### Resultado
+
+Claude Code generó una primera versión de la función `validarCUIT(valor)`.
+
+La función:
+- rechaza entradas no string o vacías;
+- valida si el formato tiene 11 dígitos o formato con guiones;
+- normaliza quitando guiones;
+- aplica el algoritmo de dígito verificador;
+- devuelve `true` o `false`.
+
+No creé todavía un archivo definitivo porque el objetivo de esta etapa fue recorrer el proceso de definición de micro-tarea, contexto y prompt antes de avanzar con una implementación final.
+
+### Evaluación
+
+El proceso ayudó a entender que antes de pedir código conviene definir con claridad la herramienta, el contexto y el prompt.
+
+El prompt fue suficientemente claro para que Claude generara una primera versión razonable de la función. Sin embargo, apareció una mejora posible: los ejemplos de CUIT válidos deberían estar definidos con datos de prueba confiables para evitar comentarios ambiguos.
+
+La principal lección es que el contexto reduce ambigüedad y evita que el copiloto tome decisiones no pedidas.
 
 ---
 
